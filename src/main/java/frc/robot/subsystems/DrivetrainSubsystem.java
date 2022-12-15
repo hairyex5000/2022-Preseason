@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -50,6 +51,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveModule m_backLeftModule;
     private final SwerveModule m_backRightModule;
     
+    private SwerveModulePosition[] m_ModulePositions;
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Field2d m_field = new Field2d();
     private Field2d m_hub = new Field2d();
@@ -101,7 +103,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 Mk4SwerveModuleHelper.GearRatio.L2, Ports.BACK_RIGHT_DRIVE, Ports.BACK_RIGHT_STEER,
                 Ports.BACK_RIGHT_STEER_ENCODER, Ports.BACK_RIGHT_OFFSET);
 
-        m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getGyroscopeRotation());
+        // m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getGyroscopeRotation());
+        m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, getGyroscopeRotation(), m_ModulePositions);
         m_feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsPerMeter, DriveConstants.kaVoltSecondsSquaredPerMeter);
     }
 
@@ -149,7 +152,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetOdometry() {
         m_navx.reset();
         m_navx.setAngleAdjustment(0);
-        m_odometry.resetPosition(new Pose2d(), new Rotation2d(0));
+        m_odometry.resetPosition(new Rotation2d(0), m_ModulePositions, new Pose2d());
     }
 
     //resets to start position (for blue four/five ball auto)
@@ -164,18 +167,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void resetOdometryFromPosition(double x, double y, double rot) {
         m_navx.reset();
         m_navx.setAngleAdjustment(-rot);
-        m_odometry.resetPosition(new Pose2d(x, y, new Rotation2d(rot)), new Rotation2d(rot));
+        m_odometry.resetPosition(new Rotation2d(rot), m_ModulePositions, new Pose2d(x, y, new Rotation2d(rot)));
     }
 
     //resets from offset
     public void resetOdometryFromPosition(double x, double y) {
-        m_odometry.resetPosition(new Pose2d(x, y, getGyroscopeRotation()), getGyroscopeRotation());
+        m_odometry.resetPosition(getGyroscopeRotation(), m_ModulePositions, new Pose2d(x, y, getGyroscopeRotation()));
     }
 
     public void resetOdometryFromPosition(Pose2d pose) {
         m_navx.reset();
         m_navx.setAngleAdjustment(-pose.getRotation().getDegrees());
-        m_odometry.resetPosition(pose, pose.getRotation());
+        m_odometry.resetPosition(pose.getRotation(), m_ModulePositions ,pose);
     }
 
     public void resetOdometryFromReference() {
@@ -243,12 +246,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // m_backLeftModule.set(states[2].speedMetersPerSecond / m_driveConstants.kMaxSpeedMetersPerSecond * MAX_VOLTAGE, states[2].angle.getRadians());
         // m_backRightModule.set(states[3].speedMetersPerSecond / m_driveConstants.kMaxSpeedMetersPerSecond * MAX_VOLTAGE, states[3].angle.getRadians());
 
+        m_ModulePositions[0] = new SwerveModulePosition(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle()));
+        m_ModulePositions[1] = new SwerveModulePosition(m_frontRightModule.getDriveVelocity(), new Rotation2d(m_frontRightModule.getSteerAngle()));
+        m_ModulePositions[2] = new SwerveModulePosition(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle()));
+        m_ModulePositions[3] = new SwerveModulePosition(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle()));
+
         //if (DriverStation.isAutonomous()) {
-            m_odometry.update(getGyroscopeRotation(),
-                    new SwerveModuleState(m_frontLeftModule.getDriveVelocity(), new Rotation2d(m_frontLeftModule.getSteerAngle())),
-                    new SwerveModuleState(m_frontRightModule.getDriveVelocity(), new Rotation2d(m_frontRightModule.getSteerAngle())),
-                    new SwerveModuleState(m_backLeftModule.getDriveVelocity(), new Rotation2d(m_backLeftModule.getSteerAngle())),
-                    new SwerveModuleState(m_backRightModule.getDriveVelocity(), new Rotation2d(m_backRightModule.getSteerAngle())));
+            m_odometry.update(getGyroscopeRotation(), m_ModulePositions);
             
             Pose2d pose = m_odometry.getPoseMeters();
 
