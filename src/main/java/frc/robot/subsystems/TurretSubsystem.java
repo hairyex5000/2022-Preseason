@@ -20,14 +20,19 @@ public class TurretSubsystem extends SubsystemBase {
 
     private final LazyTalonFX mTurretMotor;  
     private double setpoint;
-    private double targetAngle;
+    // private double targetAngle;
     
     private TurretSubsystem() {
         mTurretMotor = TalonFXFactory.createDefaultFalcon("Turret Motor", 45);
         mTurretMotor.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
         mTurretMotor.enableVoltageCompensation(true);
         mTurretMotor.setNeutralMode(NeutralMode.Brake);
+        resetPosition();
     }    
+
+    public void setTurretVelocity(double velocity) {
+        mTurretMotor.set(ControlMode.Velocity, velocity);
+    }
 
     public void setPosition(double pos) {
         mTurretMotor.configMotionAcceleration(10000); // accel limit for motion profile, test value
@@ -48,32 +53,32 @@ public class TurretSubsystem extends SubsystemBase {
         mTurretMotor.setSelectedSensorPosition(0);
     }
 
-    public void setTargetAngle(double angle) {
-        targetAngle = angle;
-    }
+    // public void setTargetAngle(double angle) {
+    //     targetAngle = angle;
+    // }
 
-    public double getTargetAngle() {
-        return targetAngle;
-    }
+    // public double getTargetAngle() {
+    //     return targetAngle;
+    // }
 
-    // counter clockwise +90
-    // clockwise -270
-    public double getAngle() {
-        double angle = 0;
-        if (Math.copySign(1, setpoint) < 0) {
-            // depends on bounds for falcon
-		} else if (Math.copySign(1, setpoint) > 0) {
-            // depends on bounds for falcon
-		}
-        return angle;
-    }
+    // // counter clockwise +90
+    // // clockwise -270
+    // public double getAngle() {
+    //     double angle = 0;
+    //     if (Math.copySign(1, setpoint) < 0) {
+    //         // depends on bounds for falcon
+	// 	} else if (Math.copySign(1, setpoint) > 0) {
+    //         // depends on bounds for falcon
+	// 	}
+    //     return angle;
+    // }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("turret setpoint", getSetpoint());
         SmartDashboard.putNumber("turret position", getPosition());
-        SmartDashboard.putNumber("turret angle", getAngle());
-        SmartDashboard.putNumber("turret target angle", getTargetAngle());
+        // SmartDashboard.putNumber("turret angle", getAngle());
+        // SmartDashboard.putNumber("turret target angle", getTargetAngle());
     }
 
 }

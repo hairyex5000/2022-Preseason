@@ -31,6 +31,10 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 		// might have to put some nt initilizations in here...
 	}
 
+	public boolean hasTarget() {
+		return result.hasTargets();
+	}
+
 	public double getYaw() {
 		if (result.hasTargets()) {
 			lastYaw = result.getBestTarget().getYaw();
@@ -49,6 +53,7 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		result = camera.getLatestResult();
+		SmartDashboard.putBoolean("PV has target", hasTarget());
 		SmartDashboard.putNumber("PV last yaw", lastYaw);
 		SmartDashboard.putNumber("PV last distance", lastDistance);
 	}
