@@ -10,7 +10,7 @@ import frc.robot.commands.CAS.AimShoot;
 import frc.robot.commands.CAS.EjectBall;
 import frc.robot.commands.CAS.RobotIdle;
 import frc.robot.commands.CAS.RobotOff;
-import frc.robot.commands.CAS.TurretAlign;
+import frc.robot.commands.CAS.TurretConstantAlign;
 import frc.robot.commands.SetSubsystemCommand.*;
 import frc.robot.factories.AutonomousCommandFactory;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -153,7 +153,7 @@ public class RobotContainer {
 
     dpadUp.whileActiveOnce(new SetTurretCommand(true));
     dpadDown.whileActiveOnce(new SetTurretCommand(false));
-    dpadRight.whileActiveOnce(new TurretAlign());
+    dpadRight.whileActiveOnce(new TurretConstantAlign());
     dpadLeft.whileActiveOnce(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
 
     m_controller.getStartButton().whenPressed(m_drivetrainSubsystem::resetOdometry);// resets to 0 -> for testing only
