@@ -51,7 +51,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final SwerveModule m_backLeftModule;
     private final SwerveModule m_backRightModule;
     
-    private SwerveModulePosition[] m_ModulePositions;
+    private SwerveModulePosition[] m_ModulePositions = {
+        new SwerveModulePosition(0, new Rotation2d()),
+        new SwerveModulePosition(0, new Rotation2d()),
+        new SwerveModulePosition(0, new Rotation2d()),
+        new SwerveModulePosition(0, new Rotation2d()),
+    };
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Field2d m_field = new Field2d();
     private Field2d m_hub = new Field2d();

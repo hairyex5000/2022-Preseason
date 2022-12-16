@@ -19,19 +19,19 @@ public class TurretConstantAlign extends CommandBase {
 		m_turretController.disableContinuousInput();
 		addRequirements(m_turret, m_PhotonCamera);
 	}
-	
-	// NEED TO FIND TURRET BOUNDS 
+
+	// NEED TO FIND TURRET BOUNDS
 
 	@Override
 	public void initialize() {
-		
+
 	}
 
 	@Override
 	public void execute() {
-		if(m_PhotonCamera.hasTarget()) {
+		if(m_PhotonCamera.hasTarget()){
 			targetYaw = m_PhotonCamera.getYaw();
-			rotSpeed = m_turretController.calculate(targetYaw, 0);
+			rotSpeed = -m_turretController.calculate(targetYaw, 0);
 			m_turret.setTurretVelocity(rotSpeed);
 		}
 	}
