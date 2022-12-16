@@ -24,11 +24,19 @@ public class TurretSubsystem extends SubsystemBase {
     
     private TurretSubsystem() {
         mTurretMotor = TalonFXFactory.createDefaultFalcon("Turret Motor", 45);
-        mTurretMotor.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
-        mTurretMotor.enableVoltageCompensation(true);
-        mTurretMotor.setNeutralMode(NeutralMode.Brake);
-        resetPosition();
-    }    
+        configureMotor(mTurretMotor, false);
+    }   
+
+    private void configureMotor(LazyTalonFX talon, boolean b){
+        talon.setInverted(b);
+        talon.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
+        talon.enableVoltageCompensation(true);
+        talon.setNeutralMode(NeutralMode.Coast);
+        talon.config_kF(0, 0.05, Constants.kTimeOutMs);
+        talon.config_kP(0, 0.12, Constants.kTimeOutMs);
+        talon.config_kI(0, 0, Constants.kTimeOutMs);
+        talon.config_kD(0, 0, Constants.kTimeOutMs);
+    }
 
     public void setTurretVelocity(double velocity) {
         mTurretMotor.set(ControlMode.Velocity, velocity);

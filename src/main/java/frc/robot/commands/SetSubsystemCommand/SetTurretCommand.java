@@ -15,7 +15,7 @@ public class SetTurretCommand extends CommandBase {
     
     @Override
     public void initialize() {
-        m_turret.setPosition(m_turret.getSetpoint() + (increase ? 1000 : -1000));
+        m_turret.setPosition(m_turret.getSetpoint() + (increase ? 100 : -100));
     }     
 
     @Override
