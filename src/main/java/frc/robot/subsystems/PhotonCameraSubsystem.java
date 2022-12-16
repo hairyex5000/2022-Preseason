@@ -22,7 +22,7 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	final double TARGET_HEIGHT_METER = Units.inchesToMeters(104);
 	final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(27);
 
-	PhotonCamera camera = new PhotonCamera("photovision");
+	PhotonCamera camera = new PhotonCamera("gloworm");
 	PhotonPipelineResult result = camera.getLatestResult();
 	double lastYaw;
 	double lastDistance;
@@ -54,7 +54,7 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	public void periodic() {
 		result = camera.getLatestResult();
 		SmartDashboard.putBoolean("PV has target", hasTarget());
-		SmartDashboard.putNumber("PV last yaw", lastYaw);
-		SmartDashboard.putNumber("PV last distance", lastDistance);
+		SmartDashboard.putNumber("PV last yaw", getYaw());
+		SmartDashboard.putNumber("PV last distance", getDistance());
 	}
 }
