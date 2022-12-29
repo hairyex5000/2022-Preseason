@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 import com.swervedrivespecialties.swervelib.Mk4ModuleConfiguration;
 import com.swervedrivespecialties.swervelib.Mk4SwerveModuleHelper;
 import com.swervedrivespecialties.swervelib.SwerveModule;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -13,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.SPI;
@@ -22,13 +27,19 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.TeleopDriveCommand;
+import edu.wpi.first.wpilibj.*;
 
 import static frc.robot.Constants.DriveConstants;
 import static frc.robot.Constants.Ports;
+
+import java.util.function.Consumer;
 
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -60,6 +71,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Field2d m_field = new Field2d();
     private Field2d m_hub = new Field2d();
+
+    Consumer<ChassisSpeeds> consume = a -> drive(a);
     
     public static DrivetrainSubsystem getInstance() {
       if (m_instance == null) {
@@ -288,5 +301,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
       double absolute = Math.toDegrees(Math.atan2(deltaY, deltaX));
       return normalize(absolute + offsetDeg);
   }
+
+public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+    PIDController xController = new PIDController(5.0, 0, 0);
+    PIDController yController = new PIDController(5.0, 0, 0);
+    PIDController thetaController = new PIDController(2.0, 0, 0, 0);
+   return new SequentialCommandGroup(
+        new InstantCommand(() -> {
+          // Reset odometry for the first path you run during auto
+          if(isFirstPath){
+              this.resetOdometryFromPosition(traj.getInitialHolonomicPose());
+          }
+        }),
+        new PPSwerveControllerCommand(
+            traj, 
+            this::getPose, // Pose supplier
+            xController,
+            yController,
+            thetaController,
+            this.consume
+        )
+    );
+}
 
 }

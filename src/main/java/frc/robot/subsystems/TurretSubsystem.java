@@ -63,6 +63,14 @@ public class TurretSubsystem extends SubsystemBase {
         mTurretMotor.setSelectedSensorPosition(0);
     }
 
+    public void increasePosition(double pos) {
+        setPosition(pos + setpoint);
+    }
+
+    public void decreasePosition(double pos) {
+        setPosition(setpoint - pos);
+    }
+
     // public void setTargetAngle(double angle) {
     //     targetAngle = angle;
     // }
