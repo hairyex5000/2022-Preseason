@@ -1,0 +1,8 @@
+{
+  "teamNumber" : 2976,
+  "connectionType" : "DHCP",
+  "staticIp" : "10.29.76.3",
+  "hostname" : "gloworm.local",
+  "runNTServer" : false,
+  "shouldManage" : false
+}
