@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,13 +54,19 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		result = camera.getLatestResult();
-		// if (result.hasTargets()) {
-		// 	if (result.getBestTarget().getYaw() > 2) {
-		// 		TurretSubsystem.getInstance().increasePosition(1000);
-		// 	} else {
-		// 		TurretSubsystem.getInstance().decreasePosition(1000);
-		// 	}
-		// }	
+		PIDController m_turretController = new PIDController(0.5, 0, 0);
+		if (result.hasTargets()) {
+			var targetYaw = result.getBestTarget().getYaw();
+			if (Math.abs(targetYaw) > 2) {
+				var rotSpeed = -m_turretController.calculate(targetYaw, 0);
+				TurretSubsystem.getInstance().setTurretVelocity(rotSpeed);
+			}
+			// if (result.getBestTarget().getYaw() > 2) {
+			// 	TurretSubsystem.getInstance().decreasePosition(100);
+			// } else if (result.getBestTarget().getYaw() < -2) {
+			// 	TurretSubsystem.getInstance().increasePosition(100);
+			// }
+		}	
 		SmartDashboard.putBoolean("PV has target", hasTarget());
 		SmartDashboard.putNumber("PV last yaw", getYaw());
 		SmartDashboard.putNumber("PV last distance", getDistance());

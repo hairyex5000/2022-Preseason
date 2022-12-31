@@ -28,6 +28,9 @@ import frc.robot.commands.SetSubsystemCommand.*;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -152,10 +155,13 @@ public class RobotContainer {
     // dpadLeft.whenActive(new InstantCommand(() -> ClimbSubsystem.getInstance().pivotPower(pivotDown)))
     //   .whenInactive(new InstantCommand(() -> ClimbSubsystem.getInstance().pivotPower(0)));
 
+      PathPlannerTrajectory path = PathPlanner.loadPath("straighttinyline", new PathConstraints(0.1, 0.1));
     dpadUp.onTrue(new SetTurretCommand(true));
     dpadDown.onTrue(new SetTurretCommand(false));
+    // dpadLeft.onTrue(new DrivetrainSubsystem().getInstance().followTrajectoryCommand(path, true));
+    dpadLeft.onTrue(new AutonomousCommandFactory().getAutonomousCommand());
     dpadRight.onTrue(new TurretConstantAlign());
-    dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
+    // dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
 
     m_controller.getStartButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry())); // resets to 0 -> for testing only
     m_controller.getBackButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry()));// resets to 0 -> for testing only

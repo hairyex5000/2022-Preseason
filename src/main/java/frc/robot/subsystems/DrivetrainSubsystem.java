@@ -40,6 +40,7 @@ import static frc.robot.Constants.DriveConstants;
 import static frc.robot.Constants.Ports;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -72,7 +73,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private Field2d m_field = new Field2d();
     private Field2d m_hub = new Field2d();
 
-    Consumer<ChassisSpeeds> consume = a -> drive(a);
+    Consumer<ChassisSpeeds> consume = a -> {
+        drive(a);
+        applyDrive();
+    };
+
+    Supplier<Pose2d> supply = () -> getPose();
     
     public static DrivetrainSubsystem getInstance() {
       if (m_instance == null) {
@@ -305,7 +311,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
     PIDController xController = new PIDController(5.0, 0, 0);
     PIDController yController = new PIDController(5.0, 0, 0);
-    PIDController thetaController = new PIDController(2.0, 0, 0, 0);
+    PIDController thetaController = new PIDController(2.0, 0, 0);
    return new SequentialCommandGroup(
         new InstantCommand(() -> {
           // Reset odometry for the first path you run during auto
@@ -315,7 +321,7 @@ public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFir
         }),
         new PPSwerveControllerCommand(
             traj, 
-            this::getPose, // Pose supplier
+            this.supply,
             xController,
             yController,
             thetaController,
