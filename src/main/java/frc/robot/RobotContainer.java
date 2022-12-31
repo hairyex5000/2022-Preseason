@@ -28,7 +28,14 @@ import frc.robot.commands.SetSubsystemCommand.*;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
@@ -155,7 +162,17 @@ public class RobotContainer {
     dpadUp.onTrue(new SetTurretCommand(true));
     dpadDown.onTrue(new SetTurretCommand(false));
     dpadRight.onTrue(new TurretConstantAlign());
-    dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
+    // dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
+    PIDController xController = new PIDController(5.0, 0, 0);
+    PIDController yController = new PIDController(5.0, 0, 0);
+    PIDController thetaController = new PIDController(2.0, 0, 0);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(1, 0.1));
+    PPSwerveControllerCommand swe = new PPSwerveControllerCommand(examplePath, m_drivetrainSubsystem.poseSupplier, xController, yController, thetaController, m_drivetrainSubsystem.chassisConsumer, m_drivetrainSubsystem);
+    dpadLeft.onTrue(new SequentialCommandGroup(
+        new CalibrationCommand(new Pose2d(1.0, 3.0, new Rotation2d(Math.toRadians(90)))),
+        swe
+      ));
 
     m_controller.getStartButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry())); // resets to 0 -> for testing only
     m_controller.getBackButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry()));// resets to 0 -> for testing only

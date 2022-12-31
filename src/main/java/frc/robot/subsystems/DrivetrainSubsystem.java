@@ -30,6 +30,9 @@ import frc.robot.commands.TeleopDriveCommand;
 import static frc.robot.Constants.DriveConstants;
 import static frc.robot.Constants.Ports;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 
 public class DrivetrainSubsystem extends SubsystemBase {
     private static DrivetrainSubsystem m_instance = null;
@@ -60,7 +63,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
     private Field2d m_field = new Field2d();
     private Field2d m_hub = new Field2d();
-    
+    public Supplier<Pose2d> poseSupplier = () -> getPose();
+    public Consumer<ChassisSpeeds> chassisConsumer = a -> {drive(a); applyDrive();};
+
     public static DrivetrainSubsystem getInstance() {
       if (m_instance == null) {
           m_instance = new DrivetrainSubsystem();
@@ -288,5 +293,26 @@ public class DrivetrainSubsystem extends SubsystemBase {
       double absolute = Math.toDegrees(Math.atan2(deltaY, deltaX));
       return normalize(absolute + offsetDeg);
   }
+
+//   public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+//     return new SequentialCommandGroup(
+//          new InstantCommand(() -> {
+//            // Reset odometry for the first path you run during auto
+//            if(isFirstPath){
+//                this.resetOdometry(traj.getInitialHolonomicPose());
+//            }
+//          }),
+//          new PPSwerveControllerCommand(
+//              traj, 
+//              this::getPose, // Pose supplier
+//              this.kinematics, // SwerveDriveKinematics
+//              new PIDController(0, 0, 0), // X controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+//              new PIDController(0, 0, 0), // Y controller (usually the same values as X controller)
+//              new PIDController(0, 0, 0), // Rotation controller. Tune these values for your robot. Leaving them 0 will only use feedforwards.
+//              this::setModuleStates, // Module states consumer
+//              this // Requires this drive subsystem
+//          )
+//      );
+//  }
 
 }
