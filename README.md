@@ -5,5 +5,6 @@ Phoenix 5 and Pro - https://maven.ctr-electronics.com/release/com/ctre/phoenixpr
 Photon Lib - https://maven.photonvision.org/repository/internal/org/photonvision/PhotonLib-json/1.0/PhotonLib-json-1.0.json <br>
 REV Lib - https://software-metadata.revrobotics.com/REVLib-2023.json <br>
 Swerve - https://raw.githubusercontent.com/SwerveDriveSpecialties/swerve-lib/master/SdsSwerveLib.json <br>
+Path Planner - https://3015rangerrobotics.github.io/pathplannerlib/PathplannerLib.json <br>
 
 To run the photonvision backend (.jar file), run $ java -jar photonvision-v2023.1.1-beta-6.jar
