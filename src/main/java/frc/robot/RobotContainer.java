@@ -158,7 +158,7 @@ public class RobotContainer {
       PathPlannerTrajectory path = PathPlanner.loadPath("straighttinyline", new PathConstraints(0.1, 0.1));
     dpadUp.onTrue(new SetTurretCommand(true));
     dpadDown.onTrue(new SetTurretCommand(false));
-    // dpadLeft.onTrue(new DrivetrainSubsystem().getInstance().followTrajectoryCommand(path, true));
+    dpadLeft.onTrue(new DrivetrainSubsystem().getInstance().followTrajectoryCommand(path, true));
     dpadLeft.onTrue(new AutonomousCommandFactory().getAutonomousCommand());
     dpadRight.onTrue(new TurretConstantAlign());
     // dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));

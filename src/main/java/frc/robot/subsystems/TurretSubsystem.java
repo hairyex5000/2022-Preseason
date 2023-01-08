@@ -32,16 +32,29 @@ public class TurretSubsystem extends SubsystemBase {
         talon.setInverted(b);
         talon.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
         talon.enableVoltageCompensation(true);
-        talon.setNeutralMode(NeutralMode.Brake);
+        talon.setNeutralMode(NeutralMode.Coast);
 
-        talon.config_kF(0, 1.0, Constants.kTimeOutMs);
-        talon.config_kP(0, 1.0, Constants.kTimeOutMs);
+        talon.config_kF(0, 0.0, Constants.kTimeOutMs);
+        talon.config_kP(0, 0.25, Constants.kTimeOutMs);
         talon.config_kI(0, 0, Constants.kTimeOutMs);
-        talon.config_kD(0, 0, Constants.kTimeOutMs);
+        talon.config_kD(0, 0.08, Constants.kTimeOutMs);
     }
 
+    double velocity;
+
     public void setTurretVelocity(double velocity) {
+        this.velocity = velocity;
         mTurretMotor.set(ControlMode.Velocity, velocity);
+    }
+
+    public void increaseTurretVelocity(double velocity) {
+        this.velocity += velocity;
+        mTurretMotor.set(ControlMode.Velocity, this.velocity);
+    }
+
+    public void decreaseTurretVelocity(double velocity) {
+        this.velocity -= velocity;
+        mTurretMotor.set(ControlMode.Velocity, this.velocity);
     }
 
     public void setPosition(double pos) {
@@ -95,6 +108,8 @@ public class TurretSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("turret setpoint", getSetpoint());
         SmartDashboard.putNumber("turret position", getPosition());
+        SmartDashboard.putNumber("turret velocity", velocity);
+        SmartDashboard.putNumber("sensor turret velocity", mTurretMotor.getSelectedSensorVelocity());
         // SmartDashboard.putNumber("turret angle", getAngle());
         // SmartDashboard.putNumber("turret target angle", getTargetAngle());
     }

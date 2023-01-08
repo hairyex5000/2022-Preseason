@@ -54,11 +54,11 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		result = camera.getLatestResult();
-		PIDController m_turretController = new PIDController(0.5, 0, 0);
+		PIDController m_turretController = new PIDController(5, 0, 0);
 		if (result.hasTargets()) {
 			var targetYaw = result.getBestTarget().getYaw();
 			if (Math.abs(targetYaw) > 2) {
-				var rotSpeed = -m_turretController.calculate(targetYaw, 0);
+				var rotSpeed = m_turretController.calculate(targetYaw, 0);
 				TurretSubsystem.getInstance().setTurretVelocity(rotSpeed);
 			}
 			// if (result.getBestTarget().getYaw() > 2) {
@@ -66,7 +66,9 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 			// } else if (result.getBestTarget().getYaw() < -2) {
 			// 	TurretSubsystem.getInstance().increasePosition(100);
 			// }
-		}	
+		} else {
+			TurretSubsystem.getInstance().setTurretVelocity(0);
+		}
 		SmartDashboard.putBoolean("PV has target", hasTarget());
 		SmartDashboard.putNumber("PV last yaw", getYaw());
 		SmartDashboard.putNumber("PV last distance", getDistance());
