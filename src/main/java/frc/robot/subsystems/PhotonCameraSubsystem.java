@@ -54,7 +54,7 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 	@Override
 	public void periodic() {
 		result = camera.getLatestResult();
-		PIDController m_turretController = new PIDController(5, 0, 0);
+		PIDController m_turretController = new PIDController(15, 0, 0);
 		if (result.hasTargets()) {
 			var targetYaw = result.getBestTarget().getYaw();
 			if (Math.abs(targetYaw) > 2) {
