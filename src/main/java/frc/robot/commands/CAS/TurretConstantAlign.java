@@ -1,6 +1,7 @@
 package frc.robot.commands.CAS;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.PhotonCameraSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -15,7 +16,7 @@ public class TurretConstantAlign extends CommandBase {
 	public TurretConstantAlign() {
 		m_turret = TurretSubsystem.getInstance();
 		m_PhotonCamera = PhotonCameraSubsystem.getInstance();
-		m_turretController = new PIDController(0.1, 0, 0);
+		m_turretController = new PIDController(15, 0, 0);
 		m_turretController.disableContinuousInput();
 		addRequirements(m_turret, m_PhotonCamera);
 	}
