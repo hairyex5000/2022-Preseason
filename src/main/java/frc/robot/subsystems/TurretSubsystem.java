@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.drivers.LazyTalonFX;
@@ -20,6 +22,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     private final LazyTalonFX mTurretMotor;  
     private double setpoint;
+    private PIDController m_turretController;
+    private double Kp = 15, Ki = 0, Kd = 0;
     // private double targetAngle;
     
     private TurretSubsystem() {
@@ -27,7 +31,27 @@ public class TurretSubsystem extends SubsystemBase {
         configureMotor(mTurretMotor, true);
         mTurretMotor.setSelectedSensorPosition(0);
         mTurretMotor.neutralOutput();
+        m_turretController = new PIDController(Kp, Ki, Kd);
     }   
+
+    public PIDController getPIDController() {
+        return m_turretController;
+    }
+
+    public void increaseKp() {
+        Kp++;
+        m_turretController.setP(Kp);
+    }
+    
+    public void increaseKi() {
+        Ki++;
+        m_turretController.setI(Ki);
+    }
+
+    public void increaseKd() {
+        Kd++;
+        m_turretController.setD(Kd);
+    }
 
     private void configureMotor(LazyTalonFX talon, boolean b){
         talon.setInverted(b);

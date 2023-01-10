@@ -16,7 +16,7 @@ public class TurretConstantAlign extends CommandBase {
 	public TurretConstantAlign() {
 		m_turret = TurretSubsystem.getInstance();
 		m_PhotonCamera = PhotonCameraSubsystem.getInstance();
-		m_turretController = new PIDController(15, 0, 0);
+		m_turretController = m_turret.getPIDController();
 		// m_turretController.setTolerance();
 		m_turretController.disableContinuousInput();
 		addRequirements(m_turret, m_PhotonCamera);
