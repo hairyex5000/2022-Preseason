@@ -42,6 +42,10 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 		return lastYaw;
 	}
 
+	public int getID(){
+		return result.getBestTarget().getFiducialId();
+	}
+	
 	public double getDistance() {
 		if (result.hasTargets()) {
 			lastDistance = PhotonUtils.calculateDistanceToTargetMeters(CAMERA_HEIGHT_METERS, TARGET_HEIGHT_METER,
