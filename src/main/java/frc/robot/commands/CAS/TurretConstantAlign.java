@@ -46,8 +46,8 @@ public class TurretConstantAlign extends CommandBase {
 		SmartDashboard.putBoolean("has target", m_PhotonCamera.hasTarget());
 	}
 
-	// @Override
-	// public void end() {
-	// 	rotSpeed = 0;
-	// }
+	@Override
+	public void end(boolean interrupted) {
+		rotSpeed = 0;
+	}
 }
