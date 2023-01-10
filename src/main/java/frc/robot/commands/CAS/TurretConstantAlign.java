@@ -26,24 +26,28 @@ public class TurretConstantAlign extends CommandBase {
 
 	@Override
 	public void initialize() {
-
+		rotSpeed = 360;
 	}
 
 	@Override
-	public void execute() {
-		rotSpeed = m_turretController.calculate(targetYaw, 0);
-		
+	public void execute() {	
 		if(m_PhotonCamera.hasTarget()){
 			targetYaw = m_PhotonCamera.getYaw();
+			rotSpeed = m_turretController.calculate(targetYaw, 0);
 		} else {
-			// if(rotSpeed < 0){
-			// 	rotSpeed = -360;
-			// } else if (rotSpeed == 0){
-			// 	rotSpeed = 360;
-			// }
+			if(rotSpeed < 0){
+				rotSpeed = -360;
+			} else if (rotSpeed > 0){
+				rotSpeed = 360;
+			}
 		}
 		m_turret.setTurretVelocity(rotSpeed);
 		SmartDashboard.putNumber("Rot speed", rotSpeed);
 		SmartDashboard.putBoolean("has target", m_PhotonCamera.hasTarget());
 	}
+
+	// @Override
+	// public void end() {
+	// 	rotSpeed = 0;
+	// }
 }
