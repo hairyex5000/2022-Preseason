@@ -5,10 +5,13 @@ import org.photonvision.PhotonUtils;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.lib.util.GameAprilTags;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.PhotonCameraSubsystem;
+import frc.robot.Constants;
 
 public class SmartResetOdometry extends CommandBase {
+    int kTargetPitch = 0;
     DrivetrainSubsystem m_driveTrain;
     PhotonCameraSubsystem m_Camera;
     boolean isReset;
@@ -30,9 +33,10 @@ public class SmartResetOdometry extends CommandBase {
     public void execute(){
         if(m_Camera.hasTarget()){
             int targetID = m_Camera.getID();
-            Pose2d robotPose = new Pose2d();
+            // var target = m_Camera.getBestTarget();
+            Pose2d targetPose = GameAprilTags.getInstance().getPose(targetID);
             // Pose2d robotPose = PhotonUtils.estimateFieldToRobot(kCameraHeight, kTargetHeight, kCameraPitch, kTargetPitch, Rotation2d.fromDegrees(-target.getYaw()), gyro.getRotation2d(), targetPose, cameraToRobot);
-            m_driveTrain.resetOdometryFromPosition(robotPose);
+            // m_driveTrain.resetOdometryFromPosition(robotPose);
             isReset = true;
         }
     }

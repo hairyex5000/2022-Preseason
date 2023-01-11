@@ -4,7 +4,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 public class GameAprilTags {
-    Pose2d[] targets = new Pose2d[8];
+    private static Pose2d[] targets = new Pose2d[8];
+    private static GameAprilTags m_AprilTags;
+
+    public static GameAprilTags getInstance(){
+        if(m_AprilTags == null){
+            m_AprilTags = new GameAprilTags();
+        }
+        return m_AprilTags;
+    }
 
     public GameAprilTags () {
         targets[0] = new Pose2d(15.51, 1.07, new Rotation2d());
