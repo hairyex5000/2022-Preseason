@@ -49,5 +49,6 @@ public class TurretConstantAlign extends CommandBase {
 	@Override
 	public void end(boolean interrupted) {
 		rotSpeed = 0;
+		m_turret.setTurretVelocity(rotSpeed);
 	}
 }
