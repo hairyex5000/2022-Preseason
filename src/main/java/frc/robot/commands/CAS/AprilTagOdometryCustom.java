@@ -40,16 +40,23 @@ public class AprilTagOdometryCustom extends CommandBase {
             double zDif = Math.abs(Constants.limelightHeight - targetPose.getZ());
             double xChange = Math.sqrt(b * b - zDif * zDif);
 
-            if (m_camera.getYaw() < 0) {
-                m_driveTrain.resetOdometryFromPosition(targetPose.getX() + xChange, targetPose.getY() + yChange);
+            double newX;
+            if (m_camera.getID() < 5 ) {
+                newX = targetPose.getX() - xChange;
             }
             else {
-                m_driveTrain.resetOdometryFromPosition(targetPose.getX() + xChange, targetPose.getY() + yChange);
+                newX = targetPose.getX() + xChange;
+            }
+            if (m_camera.getYaw() < 0) {
+                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() + yChange);
+            }
+            else {
+                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() - yChange);
             }
             isReset = true;
         }
     }
-    
+
     @Override 
     public boolean isFinished() {
         return isReset;
