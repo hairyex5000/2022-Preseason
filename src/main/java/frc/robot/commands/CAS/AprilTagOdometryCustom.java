@@ -36,22 +36,23 @@ public class AprilTagOdometryCustom extends CommandBase {
             double dist = PhotonUtils.calculateDistanceToTargetMeters(Constants.limelightHeight, targetPose.getZ(), cameraPitch, 0);
             double yaw = Math.abs(m_camera.getYaw());
             double yChange = dist * Math.sin(yaw);
-            double b = dist * Math.sin(90 - yaw);
-            double zDif = Math.abs(Constants.limelightHeight - targetPose.getZ());
-            double xChange = Math.sqrt(b * b - zDif * zDif);
-
-            double newX;
+            double xChange = dist * Math.sin(90 - yaw);
+            // double zDif = Math.abs(Constants.limelightHeight - targetPose.getZ());
+            // double xChange = Math.sqrt(b * b - zDif * zDif);
+            double newX, rot;
             if (m_camera.getID() < 5 ) {
+                rot = -yaw;
                 newX = targetPose.getX() - xChange;
             }
             else {
+                rot = 180 - m_camera.getYaw();
                 newX = targetPose.getX() + xChange;
             }
             if (m_camera.getYaw() < 0) {
-                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() + yChange);
+                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() + yChange, rot);
             }
             else {
-                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() - yChange);
+                m_driveTrain.resetOdometryFromPosition(newX, targetPose.getY() - yChange, rot);
             }
             isReset = true;
         }
