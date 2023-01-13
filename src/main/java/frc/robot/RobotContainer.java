@@ -10,6 +10,7 @@ import frc.robot.commands.CAS.AimShoot;
 import frc.robot.commands.CAS.EjectBall;
 import frc.robot.commands.CAS.RobotIdle;
 import frc.robot.commands.CAS.RobotOff;
+import frc.robot.commands.CAS.SmartResetOdometry;
 import frc.robot.commands.CAS.TurretConstantAlign;
 import frc.robot.commands.SetSubsystemCommand.*;
 import frc.robot.factories.AutonomousCommandFactory;
@@ -159,6 +160,8 @@ public class RobotContainer {
     dpadUp.onTrue(new SetTurretCommand(true));
     dpadDown.onTrue(new SetTurretCommand(false));
     dpadRight.onTrue(new TurretConstantAlign());
+    dpadLeft.onTrue(new SmartResetOdometry());
+
     // dpadLeft.onTrue(new InstantCommand(() -> m_turretSubsystem.resetPosition()));
     PIDController xController = new PIDController(5.0, 0, 0);
     PIDController yController = new PIDController(5.0, 0, 0);
@@ -166,10 +169,10 @@ public class RobotContainer {
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
     PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(1, 0.1));
     PPSwerveControllerCommand swe = new PPSwerveControllerCommand(examplePath, m_drivetrainSubsystem.poseSupplier, xController, yController, thetaController, m_drivetrainSubsystem.chassisConsumer, m_drivetrainSubsystem);
-    dpadLeft.onTrue(new SequentialCommandGroup(
-        new CalibrationCommand(new Pose2d(1.0, 3.0, new Rotation2d(Math.toRadians(90)))),
-        swe
-      ));
+    // dpadLeft.onTrue(new SequentialCommandGroup(
+    //     new CalibrationCommand(new Pose2d(1.0, 3.0, new Rotation2d(Math.toRadians(90)))),
+    //     swe
+    //   ));
 
     m_controller.getStartButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry())); // resets to 0 -> for testing only
     m_controller.getBackButton().onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetOdometry()));// resets to 0 -> for testing only

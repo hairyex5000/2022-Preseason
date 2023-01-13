@@ -231,6 +231,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         applyDrive();
         SmartDashboard.putNumber("Rotation", getGyroscopeRotation().getDegrees());
         SmartDashboard.putBoolean("IsCalibrating", m_navx.isCalibrating());
+        SmartDashboard.putNumber("robot x", m_odometry.getPoseMeters().getX());
+        SmartDashboard.putNumber("robot y", m_odometry.getPoseMeters().getY());
 
         /*SmartDashboard.putNumber("FLSteer", RobotContainer.getPDP().getCurrent(4));
         SmartDashboard.putNumber("FLDrive", RobotContainer.getPDP().getCurrent(6));

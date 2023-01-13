@@ -45,6 +45,7 @@ public class SmartResetOdometry extends CommandBase {
             // Pose2d robotPose = PhotonUtils.estimateFieldToRobot(kCameraHeight, kTargetHeight, kCameraPitch, kTargetPitch, Rotation2d.fromDegrees(-target.getYaw()), gyro.getRotation2d(), targetPose, cameraToRobot);
             m_driveTrain.resetOdometryFromPosition(robotPose.getX(), robotPose.getY(), robotPose.getRotation().getZ());
             isReset = true;
+            
         }
     }
 
