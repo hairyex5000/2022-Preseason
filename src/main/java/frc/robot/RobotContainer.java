@@ -13,7 +13,6 @@ import frc.robot.commands.CAS.RobotOff;
 import frc.robot.commands.CAS.TurretConstantAlign;
 import frc.robot.commands.SetSubsystemCommand.*;
 import frc.robot.factories.AutonomousCommandFactory;
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.LimelightSubsystem;
@@ -71,7 +70,6 @@ public class RobotContainer {
   private LimelightSubsystem m_limelight;
   private IndexerSubsystem m_indexerSubsystem;
   private ShooterSubsystem m_shooterSubsystem;
-  private ClimbSubsystem m_climbSubsystem;
   private PivotSubsystem m_pivotSubsystem;
   private TurretSubsystem m_turretSubsystem;
   private PhotonCameraSubsystem m_PhotonCameraSubsystem;
@@ -89,7 +87,6 @@ public class RobotContainer {
     m_limelight = LimelightSubsystem.getInstance();
     m_indexerSubsystem = IndexerSubsystem.getInstance();
     m_shooterSubsystem = ShooterSubsystem.getInstance();
-    m_climbSubsystem = ClimbSubsystem.getInstance();
     m_pivotSubsystem = PivotSubsystem.getInstance();
     m_turretSubsystem = TurretSubsystem.getInstance();
     m_PhotonCameraSubsystem = PhotonCameraSubsystem.getInstance();
@@ -231,19 +228,10 @@ public class RobotContainer {
     rightTriggerAxis2.whenActive(new SetIndexerCommand(indexerUp,false))
                      .whenInactive(new SetIndexerCommand(0.0, false));*/
     m_controller2.getLeftBumper().onTrue(new SetIntakeCommand(intakeOn,true));
-    m_controller2.getRightBumper().onTrue(new SetIndexerCommand(indexerUp,true));
-                     
-    leftTriggerAxis2.whileTrue(new InstantCommand(() -> ClimbSubsystem.getInstance().leftPivotPower(pivotDown*m_controller2.getLeftTriggerAxis())))
-      .onFalse(new InstantCommand(() -> ClimbSubsystem.getInstance().leftPivotPower(0)));
-    rightTriggerAxis2.whileTrue(new InstantCommand(() -> ClimbSubsystem.getInstance().rightPivotPower(pivotDown*m_controller2.getRightTriggerAxis())))
-      .onFalse(new InstantCommand(() -> ClimbSubsystem.getInstance().rightPivotPower(0)));                    
+    m_controller2.getRightBumper().onTrue(new SetIndexerCommand(indexerUp,true));            
                     
     Trigger leftJoyStick = new Trigger(() -> { return Math.abs(m_controller2.getLeftY()) > triggerDeadzone;});
     Trigger rightJoystick = new Trigger(() -> { return Math.abs(m_controller2.getRightY()) > triggerDeadzone;});
-    leftJoyStick.whileTrue(new InstantCommand(() -> ClimbSubsystem.getInstance().leftClimbPower(-climbUp*m_controller2.getLeftY())))
-      .whileFalse(new InstantCommand(() -> ClimbSubsystem.getInstance().leftClimbPower(0)));
-    rightJoystick.whileTrue(new InstantCommand(() -> ClimbSubsystem.getInstance().rightClimbPower(-climbUp*m_controller2.getRightY())))
-      .whileFalse(new InstantCommand(() -> ClimbSubsystem.getInstance().rightClimbPower(0)));
 
     
     m_controller2.getXButton().whileTrue(new SetIntakeCommand(intakeOn,false)).onFalse(new SetIntakeCommand(0.0, false));

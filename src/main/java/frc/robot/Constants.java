@@ -39,6 +39,7 @@ public final class Constants {
     public static final double pivotDown = 0.4;
     
     public static final double limelightHeight = 0.978; //in meters
+    public static final double limelightPitch = 27;
 
     
     public static final Translation2d targetHudPosition = new Translation2d(8.23, 4.165);

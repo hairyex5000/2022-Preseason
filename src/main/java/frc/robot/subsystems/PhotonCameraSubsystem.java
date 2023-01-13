@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class PhotonCameraSubsystem extends SubsystemBase {
 	private static PhotonCameraSubsystem instance = null;
@@ -40,6 +41,10 @@ public class PhotonCameraSubsystem extends SubsystemBase {
 			lastYaw = result.getBestTarget().getYaw();
 		}
 		return lastYaw;
+	}
+
+	public PhotonTrackedTarget getBestTarget() {
+		return result.getBestTarget();
 	}
 
 	public int getID(){
