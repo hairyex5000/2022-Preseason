@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,21 +22,24 @@ public class TurretSubsystem extends SubsystemBase {
         return instance;
     }
 
-    private final LazyTalonFX mTurretMotor;  
+    private final CANSparkMax mTurretMotor;
+
+    // private final LazyTalonFX mTurretMotor;  
     private double setpoint;
-    private PIDController m_turretController;
+    private SparkMaxPIDController m_turretController;
     private double Kp = 15, Ki = 0, Kd = 0;
     // private double targetAngle;
     
     private TurretSubsystem() {
-        mTurretMotor = TalonFXFactory.createDefaultFalcon("Turret Motor", 45);
-        configureMotor(mTurretMotor, true);
-        mTurretMotor.setSelectedSensorPosition(0);
-        mTurretMotor.neutralOutput();
-        m_turretController = new PIDController(Kp, Ki, Kd);
+        // mTurretMotor = TalonFXFactory.createDefaultFalcon("Turret Motor", 45);
+        mTurretMotor = new CANSparkMax(Constants.Ports.TURRET_NEO_MOTOR_ID, Constants.Ports.TURRET_NEO_MOTOR_TYPE);
+        // configureMotor(mTurretMotor, true);
+        // mTurretMotor.setSelectedSensorPosition(0);
+        // mTurretMotor.neutralOutput();
+        m_turretController = mTurretMotor.getPIDController();
     }   
 
-    public PIDController getPIDController() {
+    public SparkMaxPIDController getPIDController() {
         return m_turretController;
     }
 
@@ -53,40 +58,52 @@ public class TurretSubsystem extends SubsystemBase {
         m_turretController.setD(Kd);
     }
 
-    private void configureMotor(LazyTalonFX talon, boolean b){
-        talon.setInverted(b);
-        talon.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
-        talon.enableVoltageCompensation(true);
-        talon.setNeutralMode(NeutralMode.Brake);
+    private void configureMotor(CANSparkMax motor, boolean b){
+        motor.setInverted(b);
+        motor.setControlFramePeriodMs(Constants.kTimeOutMs);
+        // motor.configVoltageCompSaturation(12.0, Constants.kTimeOutMs);
+        motor.setVoltage(12.0);
+        motor.enableVoltageCompensation(12.0);
 
-        talon.config_kF(0, 1.0, Constants.kTimeOutMs);
-        talon.config_kP(0, 1.0, Constants.kTimeOutMs);
-        talon.config_kI(0, 0, Constants.kTimeOutMs);
-        talon.config_kD(0, 0, Constants.kTimeOutMs);
+        // motor.setNeutralMode(NeutralMode.Brake);
+
+        m_turretController.setP(1.0);
+        m_turretController.setI(0);
+        m_turretController.setD(0);
+        m_turretController.setFF(1.0);
+
+        
+        // talon.config_kF(0, 1.0, Constants.kTimeOutMs);
+        // talon.config_kP(0, 1.0, Constants.kTimeOutMs);
+        // talon.config_kI(0, 0, Constants.kTimeOutMs);
+        // talon.config_kD(0, 0, Constants.kTimeOutMs);
     }
 
     public void setTurretVelocity(double velocity) {
-        mTurretMotor.set(ControlMode.Velocity, velocity);
+        // mTurretMotor.set(ControlMode.Velocity, velocity);
+        mTurretMotor.set(velocity);
     }
 
     public void setPosition(double pos) {
-        mTurretMotor.configMotionAcceleration(10000); // accel limit for motion profile, test value
-        mTurretMotor.configMotionCruiseVelocity(10000); // velo limit for motion profile, test value
-        mTurretMotor.set(ControlMode.MotionMagic, pos);
+        // mTurretMotor.configMotionAcceleration(10000); // accel limit for motion profile, test value
+        m_turretController.setSmartMotionMinOutputVelocity(3, 0);
+        m_turretController.setSmartMotionMaxVelocity(5, 0);
+        // mTurretMotor.configMotionCruiseVelocity(10000); // velo limit for motion profile, test value
+        // mTurretMotor.set(ControlMode.MotionMagic, pos);
         setpoint = pos;
     }
     
-    public double getSetpoint() {
-        return setpoint;
-    }
+    // public double getSetpoint() {
+    //     return setpoint;
+    // }
     
-    public double getPosition() {
-        return mTurretMotor.getSelectedSensorPosition();
-    }
+    // public double getPosition() {
+    //     return mTurretMotor.getSelectedSensorPosition();
+    // }
     
-    public void resetPosition() {
-        mTurretMotor.setSelectedSensorPosition(0);
-    }
+    // public void resetPosition() {
+    //     mTurretMotor.setSelectedSensorPosition(0);
+    // }
 
     // public void setTargetAngle(double angle) {
     //     targetAngle = angle;
@@ -110,8 +127,8 @@ public class TurretSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("turret setpoint", getSetpoint());
-        SmartDashboard.putNumber("turret position", getPosition());
+        // SmartDashboard.putNumber("turret setpoint", getSetpoint());
+        // SmartDashboard.putNumber("turret position", getPosition());
         // SmartDashboard.putNumber("turret angle", getAngle());
         // SmartDashboard.putNumber("turret target angle", getTargetAngle());
     }
