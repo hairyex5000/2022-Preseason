@@ -1,10 +1,17 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.lib.drivers.LazyTalonFX;
+import frc.lib.drivers.TalonFXFactory;
 import frc.robot.Constants;
 
 public class TurretSubsystem extends SubsystemBase {
@@ -18,20 +25,22 @@ public class TurretSubsystem extends SubsystemBase {
     }
 
     private final CANSparkMax mTurretMotor;
+    private final RelativeEncoder m_encoder;
 
     // private final LazyTalonFX mTurretMotor;  
     private double setpoint;
     private SparkMaxPIDController m_turretController;
     private double Kp = 15, Ki = 0, Kd = 0;
-    // private double targetAngle;
+    private double targetAngle;
     
     private TurretSubsystem() {
         // mTurretMotor = TalonFXFactory.createDefaultFalcon("Turret Motor", 45);
         mTurretMotor = new CANSparkMax(Constants.Ports.TURRET_NEO_MOTOR_ID, Constants.Ports.TURRET_NEO_MOTOR_TYPE);
-        // configureMotor(mTurretMotor, true);
+        //configureMotor(mTurretMotor, true);
         // mTurretMotor.setSelectedSensorPosition(0);
         // mTurretMotor.neutralOutput();
         m_turretController = mTurretMotor.getPIDController();
+        m_encoder  = mTurretMotor.getEncoder();
     }   
 
     public SparkMaxPIDController getPIDController() {
@@ -76,7 +85,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     public void setTurretVelocity(double velocity) {
         // mTurretMotor.set(ControlMode.Velocity, velocity);
-        mTurretMotor.set(velocity);
+        mTurretMotor.set(0.1);
     }
 
     public void setPosition(double pos) {
@@ -88,25 +97,27 @@ public class TurretSubsystem extends SubsystemBase {
         setpoint = pos;
     }
     
-    // public double getSetpoint() {
-    //     return setpoint;
-    // }
+    public double getSetpoint() {
+        return setpoint;
+    }
     
-    // public double getPosition() {
-    //     return mTurretMotor.getSelectedSensorPosition();
-    // }
+    public double getPosition() {
+        //return mTurretMotor.getSelectedSensorPosition();
+        return m_encoder.getPosition();
+    }
     
-    // public void resetPosition() {
-    //     mTurretMotor.setSelectedSensorPosition(0);
-    // }
+    public void resetPosition() {
+        //mTurretMotor.setSelectedSensorPosition(0);
+        m_encoder.setPosition(0);
+    }
 
-    // public void setTargetAngle(double angle) {
-    //     targetAngle = angle;
-    // }
+    public void setTargetAngle(double angle) {
+        targetAngle = angle;
+    }
 
-    // public double getTargetAngle() {
-    //     return targetAngle;
-    // }
+    public double getTargetAngle() {
+        return targetAngle;
+    }
 
     // // counter clockwise +90
     // // clockwise -270

@@ -181,11 +181,14 @@ public class RobotContainer {
     // m_controller.getBButton().onTrue(new SetIntakeIndexerCommand(intakeReverse, indexerDown));//right bumper hold
     // m_controller.getBButton().onFalse(new SetIntakeIndexerCommand(0, 0));//right bumper release
 
-    m_controller.getXButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKp()));
-    m_controller.getYButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKi()));
-    m_controller.getBButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKd()));
+    // m_controller.getXButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKp()));
+    // m_controller.getYButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKi()));
+    // m_controller.getBButton().onTrue(new InstantCommand(() -> m_turretSubsystem.increaseKd()));
 
-    m_controller.getAButton().onTrue(new RobotIdle());
+    m_controller.getAButton().onTrue(new MoveTurretRight());
+    m_controller.getAButton().onFalse(new StopTurret());
+
+    //m_controller.getAButton().onTrue(new RobotIdle());
     // m_controller.getYButton().onTrue(new RobotOff());
 
     m_controller.getLeftBumper().whileTrue(new SetIntakeCommand(intakeReverse, false));
