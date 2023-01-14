@@ -1,5 +1,7 @@
 package frc.robot.commands.CAS;
 
+import com.revrobotics.SparkMaxPIDController;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -11,14 +13,14 @@ public class TurretConstantAlign extends CommandBase {
 	PhotonCameraSubsystem m_PhotonCamera;
 	double targetYaw;
 	double rotSpeed;
-	PIDController m_turretController;
+	SparkMaxPIDController m_turretController;
 
 	public TurretConstantAlign() {
 		m_turret = TurretSubsystem.getInstance();
 		m_PhotonCamera = PhotonCameraSubsystem.getInstance();
 		m_turretController = m_turret.getPIDController();
 		// m_turretController.setTolerance();
-		m_turretController.disableContinuousInput();
+		// m_turretController.disableContinuousInput();
 		addRequirements(m_turret, m_PhotonCamera);
 	}
 
@@ -33,7 +35,7 @@ public class TurretConstantAlign extends CommandBase {
 	public void execute() {	
 		if(m_PhotonCamera.hasTarget()){
 			targetYaw = m_PhotonCamera.getYaw();
-			rotSpeed = m_turretController.calculate(targetYaw, 0);
+			// rotSpeed = m_turretController.calculate(targetYaw, 0);
 		} else {
 			if(rotSpeed < 0){
 				rotSpeed = -360;
