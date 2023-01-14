@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 
+import com.ctre.phoenix.motorcontrol.MotorCommutation;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.swervedrivespecialties.swervelib.SdsModuleConfigurations;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -134,6 +136,9 @@ public final class Constants {
         public static final int RIGHT_CLIMB = 42;
         public static final int LEFT_PIVOT = 44;
         public static final int RIGHT_PIVOT = 43;
+        
+        public static final int TURRET_NEO_MOTOR_ID = 0; 
+        public static final MotorType TURRET_NEO_MOTOR_TYPE = MotorType.kBrushless; 
 
     }
 }
