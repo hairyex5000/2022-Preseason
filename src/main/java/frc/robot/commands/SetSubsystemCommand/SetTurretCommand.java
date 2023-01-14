@@ -15,7 +15,8 @@ public class SetTurretCommand extends CommandBase {
     
     @Override
     public void initialize() {
-        m_turret.setPosition(m_turret.getSetpoint() + (increase ? 1000 : -1000));
+        // FIXME convert to Spark Max pid
+        // m_turret.setPosition(m_turret.getSetpoint() + (increase ? 1000 : -1000));
     }     
 
     @Override
